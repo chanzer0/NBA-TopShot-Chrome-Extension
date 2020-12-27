@@ -1,0 +1,14 @@
+{
+    "name": "Awesemo DK Extension",
+    "version": "1.0",
+    "description": "Get awesemo ownership and projections ON DK!",
+    "manifest_version": 2,
+    "content_scripts": [{
+        "css": ["styles.css"],
+        "js": ["content.js"],
+        "matches": ["https://www.draftkings.com/draft/contest/*"]
+    }],
+    "web_accessible_resources": [
+        "playerData.json"
+    ]
+  }

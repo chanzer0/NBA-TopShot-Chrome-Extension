@@ -73,7 +73,6 @@ function addLineupData() {
                 playersInLineup.push(playerName);
             }
             var awesemoDataDiv = buildAwesemoDiv(playersInLineup);
-           
             console.log(awesemoDataDiv);
             lineupTable.parentElement.appendChild(awesemoDataDiv);
         }
@@ -122,13 +121,11 @@ function buildAwesemoDiv(playersInLineup) {
     div.classList.add("awesemo-div");
 
     var logo = document.createElement("img");
-    logo.src = "assets/awesemo-logo.png";
-    logo.height = 64;
-    logo.width = 64;
+    logo.src = chrome.extension.getURL("assets/logo.jpg");
+    logo.classList.add("awesemo-logo");
 
     var parentDiv = document.createElement("div");
     parentDiv.appendChild(div);
     parentDiv.appendChild(logo);
-
     return parentDiv;
 }

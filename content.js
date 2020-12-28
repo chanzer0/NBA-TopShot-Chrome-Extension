@@ -60,7 +60,20 @@ function addLineupData() {
     var playersInLineup = []
     lineupPlayers.forEach(playerSpan => {
         var playerName = playerSpan.children[0].getAttribute("title");
-        if (playerName != null) {
+        if (playerName != null) {  
+            console.log("Lineup player: " + playerName)
+
+            if (playerDict[playerName] != null) {
+                var str = `${playerDict[playerName]["Fpts"]}${playerDict[playerName]["Ownership %"]}`;
+                console.log(playerSpan.innerText);
+                if (playerSpan.innerText != str) {
+                    if (Array.from(child.children[1].children[0].children).length == 2) {
+                        child.children[1].children[0].removeChild(child.children[1].children[0].children[1]);
+                    }
+                    playerDict[playerName]["div"] = null;
+                }
+            }
+
             var div = playerDict[playerName] == null ? createPlayerDiv('', true )
                                                      : playerDict[playerName]["div"] == null ? createPlayerDiv(playerName) 
                                                                                              : playerDict[playerName]["div"];                                                                                
@@ -72,9 +85,10 @@ function addLineupData() {
             if (!playersInLineup.includes(playerName)){
                 playersInLineup.push(playerName);
             }
-            buildAwesemoDiv(playersInLineup, lineupTable.parentElement);
         }
     });
+    console.log(playersInLineup);
+    buildAwesemoDiv(playersInLineup, lineupTable.parentElement);
 }
 
 function addPlayerData() {
@@ -95,6 +109,7 @@ function addPlayerData() {
                     child.children[1].children[0].removeChild(child.children[1].children[0].children[1]);
                 }
             }
+            playerDict[playerName]["div"] = null;
         }                                                                                
         
         if (Array.from(child.children[1].children[0].children).length == 1) {
@@ -111,15 +126,36 @@ function buildAwesemoDiv(playersInLineup, parentElement) {
     var own = playersInLineup.map(player => +playerDict[player]["Ownership %"]).reduce((a, b) => a + b, 0);
     var boom = playersInLineup.map(player => +playerDict[player]["Boom %"]).reduce((a, b) => a + b, 0);
     var opto = playersInLineup.map(player => +playerDict[player]["Optimal %"]).reduce((a, b) => a + b, 0);
-    var leverage = playersInLineup.map(player => +playerDict[player]["Leverage"]).reduce((a, b) => a + b, 0);
 
-    fetch(chrome.extension.getURL('assets/template.html'))
+    var current = document.getElementById("awesemo-data");
+    if (current != null) {
+        // current.remove();
+        parentElement.removeChild(current.parentElement);
+    }
+    if (playersInLineup.length != 0) {
+        fetch(chrome.extension.getURL('assets/template.html'))
         .then(response => response.text())
         .then(data => {
             var div = document.createElement("div");
             div.innerHTML = data;
+            
             parentElement.appendChild(div);
 
+            console.log(fpts);
+            console.log(own);
+            console.log(boom);
+            console.log(opto);
+
+            var fpts_str = isNaN(fpts) ? 'N/A' : fpts.toFixed(2);
+            var own_str = isNaN(own) ? 'N/A' : own.toFixed(1);
+            var boom_str = isNaN(boom) ? 'N/A' : boom.toFixed(2);
+            var opto_str = isNaN(opto) ? 'N/A' : opto.toFixed(2);
+
             document.getElementById("awesemo-logo").src = chrome.extension.getURL("assets/awesemo-logo-transparent.png");
+            document.getElementById("proj").innerText = `Projection: ${fpts_str}`;
+            document.getElementById("own").innerText = `Ownership: ${own_str}%`;
+            document.getElementById("boom").innerText = `Boom: ${boom_str}%`;
+            document.getElementById("opto").innerText = `Optimal: ${opto_str}%`;
         });
+    }
 }

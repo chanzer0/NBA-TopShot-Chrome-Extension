@@ -6,7 +6,7 @@
     "content_scripts": [{
         "js": ["content.js", "assets/scripts/jquery-3.2.1.min.js", "assets/scripts/bootstrap.min.js" ],
         "css": ["styles.css", "assets/scripts/bootstrap.min.css"],
-        "matches": ["https://www.draftkings.com/draft/contest/*"]
+        "matches": ["https://www.draftkings.com/draft/contest/*", "https://www.draftkings.com/draft/entry/*"]
     }],
     "web_accessible_resources": [
         "assets/*"

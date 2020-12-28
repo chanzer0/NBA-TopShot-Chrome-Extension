@@ -4,8 +4,8 @@
     "description": "Hand-build strong lineups using Awesemo data!",
     "manifest_version": 2,
     "content_scripts": [{
-        "css": ["styles.css"],
-        "js": ["content.js"],
+        "js": ["content.js", "assets/scripts/jquery-3.2.1.min.js", "assets/scripts/bootstrap.min.js" ],
+        "css": ["styles.css", "assets/scripts/bootstrap.min.css"],
         "matches": ["https://www.draftkings.com/draft/contest/*"]
     }],
     "web_accessible_resources": [

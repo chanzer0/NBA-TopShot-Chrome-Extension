@@ -72,9 +72,7 @@ function addLineupData() {
             if (!playersInLineup.includes(playerName)){
                 playersInLineup.push(playerName);
             }
-            var awesemoDataDiv = buildAwesemoDiv(playersInLineup);
-            console.log(awesemoDataDiv);
-            lineupTable.parentElement.appendChild(awesemoDataDiv);
+            buildAwesemoDiv(playersInLineup, lineupTable.parentElement);
         }
     });
 }
@@ -108,24 +106,20 @@ function addPlayerData() {
     });
 }
 
-function buildAwesemoDiv(playersInLineup) {
+function buildAwesemoDiv(playersInLineup, parentElement) {
     var fpts = playersInLineup.map(player => +playerDict[player]["Fpts"]).reduce((a, b) => a + b, 0);
     var own = playersInLineup.map(player => +playerDict[player]["Ownership %"]).reduce((a, b) => a + b, 0);
     var boom = playersInLineup.map(player => +playerDict[player]["Boom %"]).reduce((a, b) => a + b, 0);
     var opto = playersInLineup.map(player => +playerDict[player]["Optimal %"]).reduce((a, b) => a + b, 0);
     var leverage = playersInLineup.map(player => +playerDict[player]["Leverage"]).reduce((a, b) => a + b, 0);
 
+    fetch(chrome.extension.getURL('assets/template.html'))
+        .then(response => response.text())
+        .then(data => {
+            var div = document.createElement("div");
+            div.innerHTML = data;
+            parentElement.appendChild(div);
 
-    var div = document.createElement("div");
-    div.innerHTML = `${fpts.toFixed(2)} Fpts, ${own.toFixed(2)} Own%, ${boom.toFixed(2)} Boom%, ${opto.toFixed(2)} Optimal%, ${leverage.toFixed(2)} Leverage`;
-    div.classList.add("awesemo-div");
-
-    var logo = document.createElement("img");
-    logo.src = chrome.extension.getURL("assets/logo.jpg");
-    logo.classList.add("awesemo-logo");
-
-    var parentDiv = document.createElement("div");
-    parentDiv.appendChild(div);
-    parentDiv.appendChild(logo);
-    return parentDiv;
+            document.getElementById("awesemo-logo").src = chrome.extension.getURL("assets/awesemo-logo-transparent.png");
+        });
 }

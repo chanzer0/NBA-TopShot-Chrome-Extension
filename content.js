@@ -1,6 +1,6 @@
 playerDict = {}
 
-const url = chrome.runtime.getURL("assets/playerData.json");
+const url = chrome.runtime.getURL("assets/awesemo_data/playerData.json");
 fetch(url)
     .then(response => playerDict = response.json())
     .then(json => playerDict = json);
@@ -18,14 +18,14 @@ window.addEventListener("mouseup", () => {
 });
 
 // When scrolled, update list with fpts/own
-window.addEventListener("scroll", () => {
-    addPlayerData();
-    addLineupData();
-});
-window.addEventListener("wheel", () => {
-    addPlayerData();
-    addLineupData();
-});
+// window.addEventListener("scroll", () => {
+//     addPlayerData();
+//     addLineupData();
+// });
+// window.addEventListener("wheel", () => {
+//     addPlayerData();
+//     addLineupData();
+// });
 
 // Apply data on searches
 window.addEventListener("keyup", () => {
@@ -57,20 +57,18 @@ function createPlayerDiv(playerName, shouldBeNA) {
 function addLineupData() {
     var lineupTable = document.querySelector('[data-test-id="lineup-display"]');
     var lineupPlayers = lineupTable.querySelectorAll('[data-test-id="player-name-cell"]');
-    var playersInLineup = []
+    var playersInLineup = [];
     lineupPlayers.forEach(playerSpan => {
         var playerName = playerSpan.children[0].getAttribute("title");
-        if (playerName != null) {  
-            console.log("Lineup player: " + playerName)
-
+        if (playerName != null) {
             if (playerDict[playerName] != null) {
-                var str = `${playerDict[playerName]["Fpts"]}${playerDict[playerName]["Ownership %"]}`;
-                console.log(playerSpan.innerText);
-                if (playerSpan.innerText != str) {
-                    if (Array.from(child.children[1].children[0].children).length == 2) {
-                        child.children[1].children[0].removeChild(child.children[1].children[0].children[1]);
-                    }
-                    playerDict[playerName]["div"] = null;
+                var str = `${playerDict[playerName]["Fpts"]}${playerDict[playerName]["Ownership %"]}%`;
+                var textContent = playerSpan.parentElement.textContent;
+                var idx = textContent.indexOf(textContent.match(/\d/));
+                var onScreen = textContent.substring(idx, textContent.length);
+                if (playerSpan.parentElement.children.length > 1 && onScreen != str) {
+                    playerSpan.parentElement.removeChild(playerSpan.parentElement.children[1]);
+                    // playerDict[playerName]["div"] = null;
                 }
             }
 
@@ -85,9 +83,13 @@ function addLineupData() {
             if (!playersInLineup.includes(playerName)){
                 playersInLineup.push(playerName);
             }
+        } else {
+            if (playerSpan.parentElement.children.length > 1) {
+                playerSpan.parentElement.removeChild(playerSpan.parentElement.children[1]);
+                // playerDict[playerName]["div"] = null;
+            }
         }
     });
-    console.log(playersInLineup);
     buildAwesemoDiv(playersInLineup, lineupTable.parentElement);
 }
 
@@ -128,9 +130,9 @@ function buildAwesemoDiv(playersInLineup, parentElement) {
     var opto = playersInLineup.map(player => +playerDict[player]["Optimal %"]).reduce((a, b) => a + b, 0);
 
     var current = document.getElementById("awesemo-data");
-    if (current != null) {
-        // current.remove();
+    while (current != null) {
         parentElement.removeChild(current.parentElement);
+        current = document.getElementById("awesemo-data");
     }
     if (playersInLineup.length != 0) {
         fetch(chrome.extension.getURL('assets/template.html'))
@@ -140,11 +142,6 @@ function buildAwesemoDiv(playersInLineup, parentElement) {
             div.innerHTML = data;
             
             parentElement.appendChild(div);
-
-            console.log(fpts);
-            console.log(own);
-            console.log(boom);
-            console.log(opto);
 
             var fpts_str = isNaN(fpts) ? 'N/A' : fpts.toFixed(2);
             var own_str = isNaN(own) ? 'N/A' : own.toFixed(1);

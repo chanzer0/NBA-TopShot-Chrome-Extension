@@ -154,8 +154,6 @@ function buildAwesemoDiv(playersInLineup, parentElement) {
             // feed x axis salary and y axis projection to get a linear fit - divide by 1000 to get points per dollar
             var salaries = playersInLineup.map(playerName => +(playerDict[playerName]["Salary"].replace(",",""))/1000);
             var projs = playersInLineup.map(playerName => +(playerDict[playerName]["Fpts"]));
-            console.log(salaries);
-            console.log(projs);
             var lr = linearRegression(projs, salaries);
             var slope = lr.slope.toFixed(2);
             var intercept = lr.intercept.toFixed(1);

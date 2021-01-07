@@ -59,7 +59,7 @@ function addLineupData() {
     var lineupPlayers = lineupTable.querySelectorAll('[data-test-id="player-name-cell"]');
     var playersInLineup = [];
     lineupPlayers.forEach(playerSpan => {
-        var playerName = playerSpan.children[0].getAttribute("title");
+        var playerName = playerSpan.children[0].getAttribute("title").normalize("NFD").replace(/[\u0300-\u036f]/g, "");;
         if (playerName != null) {
             if (playerDict[playerName] != null) {
                 var str = `${playerDict[playerName]["Fpts"]}${playerDict[playerName]["Ownership %"]}%`;
@@ -98,7 +98,8 @@ function addPlayerData() {
     var playerSpans = Array.from(playerTable.children);
     playerSpans.forEach(child => {
         var span = child.children[1].children[0].children[0].children[0];
-        var playerName = span.getAttribute("Title");
+        // Remove accents from playernames
+        var playerName = span.getAttribute("Title").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
         var div = playerDict[playerName] == null ? createPlayerDiv('', true )
                                                  : playerDict[playerName]["div"] == null ? createPlayerDiv(playerName) 
@@ -128,6 +129,7 @@ function buildAwesemoDiv(playersInLineup, parentElement) {
     var own = playersInLineup.map(player => +playerDict[player]["Ownership %"]).reduce((a, b) => a + b, 0);
     var boom = playersInLineup.map(player => +playerDict[player]["Boom %"]).reduce((a, b) => a + b, 0);
     var opto = playersInLineup.map(player => +playerDict[player]["Optimal %"]).reduce((a, b) => a + b, 0);
+    var lev = playersInLineup.map(player => +playerDict[player]["Leverage %"]).reduce((a, b) => a + b, 0);
 
     var current = document.getElementById("awesemo-data");
     while (current != null) {
@@ -147,12 +149,49 @@ function buildAwesemoDiv(playersInLineup, parentElement) {
             var own_str = isNaN(own) ? 'N/A' : own.toFixed(1);
             var boom_str = isNaN(boom) ? 'N/A' : boom.toFixed(2);
             var opto_str = isNaN(opto) ? 'N/A' : opto.toFixed(2);
+            var lev_str = isNaN(lev) ? 'N/A' : lev.toFixed(1);
+
+            // feed x axis salary and y axis projection to get a linear fit - divide by 1000 to get points per dollar
+            var salaries = playersInLineup.map(playerName => +(playerDict[playerName]["Salary"].replace(",",""))/1000);
+            var projs = playersInLineup.map(playerName => +(playerDict[playerName]["Fpts"]));
+            console.log(salaries);
+            console.log(projs);
+            var lr = linearRegression(projs, salaries);
+            var slope = lr.slope.toFixed(2);
+            var intercept = lr.intercept.toFixed(1);
 
             document.getElementById("awesemo-logo").src = chrome.extension.getURL("assets/awesemo-logo-transparent.png");
             document.getElementById("proj").innerText = `Projection: ${fpts_str}`;
             document.getElementById("own").innerText = `Ownership: ${own_str}%`;
             document.getElementById("boom").innerText = `Boom: ${boom_str}%`;
             document.getElementById("opto").innerText = `Optimal: ${opto_str}%`;
+            document.getElementById("lev").innerText = `Leverage: ${lev_str}%`;
+            document.getElementById("regr").innerText = `Lin. Fit: ${slope}x ${intercept >= 0 ? '+':''}${intercept}`;
         });
     }
+}
+
+function linearRegression(y,x){
+    var lr = {};
+    var n = y.length;
+    var sum_x = 0;
+    var sum_y = 0;
+    var sum_xy = 0;
+    var sum_xx = 0;
+    var sum_yy = 0;
+
+    for (var i = 0; i < y.length; i++) {
+
+        sum_x += x[i];
+        sum_y += y[i];
+        sum_xy += (x[i]*y[i]);
+        sum_xx += (x[i]*x[i]);
+        sum_yy += (y[i]*y[i]);
+    } 
+
+    lr['slope'] = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
+    lr['intercept'] = (sum_y - lr.slope * sum_x)/n;
+    lr['r2'] = Math.pow((n*sum_xy - sum_x*sum_y)/Math.sqrt((n*sum_xx-sum_x*sum_x)*(n*sum_yy-sum_y*sum_y)),2);
+
+    return lr;
 }

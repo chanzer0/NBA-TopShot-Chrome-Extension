@@ -23,7 +23,7 @@ Packaged in this github repository is a tool for Awesemo handbuilders that incor
 2. Follow the "Data Population" section below to import Awesemo data and generate the file used by the browser
 3. Once you have generated the data, navigate to `chrome://extensions/` in your Google Chrome web browser
 4. In the top left, select `Load Unpacked` and navigate to the directory of the code you downloaded in step 1.
-5. You should now see an extension like the one below. You can ignore the "Errors" tab. Click the refresh button, and then navigate to a draftkings draft lobby and test it out!
+5. You should now see an extension like the one below. You can ignore the `Errors` tab. Click the refresh button, and then navigate to a draftkings draft lobby and test it out!
     ![Extension screenshot](assets/readme_images/extension.png)
 6. You will have to follow steps 4 and 5 each time you update `playerData.json` and want those effects to take place in-browser 
 7. If you experience issues where data/numbers aren't showing up, a simple click anywhere on the screen should trigger changes, and should fix the problem. If you run into issues beyond this, feel free to leave an issue [here](https://github.com/chanzer0/Awesemo-DK-Extension/issues) and I will address it.

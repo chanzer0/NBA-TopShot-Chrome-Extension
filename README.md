@@ -19,6 +19,10 @@ Packaged in this github repository is a tool for NBA Top Shot that will sort lis
         ![Download screenshot](assets/readme_images/download.png)
 
 2. Navigate to `chrome://extensions/` in your Google Chrome web browser
+3. In the top right, enable "Developer Mode"
+
+    ![Dev mode](assets/readme_images/dev-mode.png)
+
 4. In the top left, select `Load Unpacked` and navigate to the directory of the code you downloaded in step 1.
 5. You should now see an extension like the one below. You can ignore the `Errors` tab. Click the refresh button, and then navigate to NBA Top Shot and test it out!
     

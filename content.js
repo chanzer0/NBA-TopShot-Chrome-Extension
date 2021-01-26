@@ -1,32 +1,24 @@
 window.addEventListener("load", () => {
-    var dropdownEl = document.getElementById('moment-detailed-serialNumber');
+    var dropdown = document.getElementById('moment-detailed-serialNumber');
+    var optionsList = dropdown.options;
 
-    priceSerialMap = {}
-    for (const child of dropdownEl.children) {
-        var split = child.innerText.split('-');
-        var serial = split[0].trim();
-        var numberSerial = Number(serial.replace(/[#]+/g,""));
-
-        var price = split[1].trim();
-        var numberPrice = Number(price.replace(/[^0-9.-]+/g,""));
-
-        priceSerialMap[+numberPrice] = +numberSerial;
+    var newList = []
+    for (var i = 0; i < optionsList.length; i++){
+        optionsList[i].price = optionsList[i].innerText.split('$')[1];
+        newList.push(optionsList[i]);
     }
 
-    var childElsToAppend = []
-    for (var key in priceSerialMap) {
-        var element = document.createElement("option");
-        element.setAttribute("value", `${priceSerialMap[key]}`);
-        element.setAttribute("data-testid", "moment-detailed-serialNumber-5");
-        element.innerText = `$${key}.00 - #${priceSerialMap[key]}`;
-        childElsToAppend.push(element);
-    }
+    newList = newList.sort((a, b) => {           
+        if (parseInt(a.price.replace(/,/g, '')) === parseInt(b.price.replace(/,/g, ''))) {
+            return 0;
+        }
+        else {
+            return (parseInt(a.price.replace(/,/g, '')) < parseInt(b.price.replace(/,/g, ''))) ? -1 : 1;
+        }   
+    });
 
-    var cNode = dropdownEl.cloneNode(false);
-    dropdownEl.parentNode.replaceChild(cNode, dropdownEl);
-
-    dropdownEl = document.getElementById('moment-detailed-serialNumber');
-    for (var i = 0; i < childElsToAppend.length; i++){
-        dropdownEl.appendChild(childElsToAppend[i]);
+    for (var i = 0; i <= optionsList.length; i++) {            
+        optionsList[i] = newList[i];
     }
+    optionsList[0].selected = true;
 });

@@ -13,7 +13,7 @@ Packaged in this github repository is a tool for NBA Top Shot that will sort lis
 - To use the extension, you will obviously need to use the Google Chrome web browser
 
 1. From this github repository, you may either:
-    - clone the repository if you are used to git - `git clone https://github.com/chanzer0/Awesemo-DK-Extension.git`
+    - clone the repository if you are used to git - `git clone https://github.com/chanzer0/NBA-TopShot-Chrome-Extension.git`
     - download the codebase as a ZIP file (see screenshot below). Extract the zip file to your location of choosing.
     
         ![Download screenshot](assets/readme_images/download.png)
@@ -21,4 +21,5 @@ Packaged in this github repository is a tool for NBA Top Shot that will sort lis
 2. Navigate to `chrome://extensions/` in your Google Chrome web browser
 4. In the top left, select `Load Unpacked` and navigate to the directory of the code you downloaded in step 1.
 5. You should now see an extension like the one below. You can ignore the `Errors` tab. Click the refresh button, and then navigate to NBA Top Shot and test it out!
+    
     ![Extension screenshot](assets/readme_images/extension.png)

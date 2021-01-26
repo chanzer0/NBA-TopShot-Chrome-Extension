@@ -27,9 +27,6 @@ window.addEventListener("load", () => {
 
     dropdownEl = document.getElementById('moment-detailed-serialNumber');
     for (var i = 0; i < childElsToAppend.length; i++){
-        console.log(childElsToAppend[i]);
         dropdownEl.appendChild(childElsToAppend[i]);
     }
-
-    console.log(childElsToAppend);
 });

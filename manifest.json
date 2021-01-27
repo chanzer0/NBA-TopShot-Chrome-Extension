@@ -6,9 +6,12 @@
     "content_scripts": [{
         "js": ["content.js", "assets/scripts/jquery-3.2.1.min.js", "assets/scripts/bootstrap.min.js" ],
         "css": ["styles.css", "assets/scripts/bootstrap.min.css"],
-        "matches": ["https://www.nbatopshot.com/listings/p2p/*"]
+        "matches": ["https://www.nbatopshot.com/listings/p2p/*", "http://www.nbatopshot.com/listings/p2p/*"]
     }],
     "web_accessible_resources": [
         "assets/*"
+    ],
+    "permissions": [
+        "storage"
     ]
   }

@@ -2,6 +2,8 @@
 
 Packaged in this github repository is a tool for NBA Top Shot that will sort listing prices ascending, instead of by serial number. This allows you to find undervalued serial numbers.
 
+If you find value in this extension, and feel inclined to gift me a moment, you can send them to ["chanZERO"](https://www.nbatopshot.com/user/@chanZERO)
+
 
 
 ## Screenshots

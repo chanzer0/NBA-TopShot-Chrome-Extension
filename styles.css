@@ -1,21 +1,3 @@
-.logo-background {
-    background-color: rgb(31,41,56);
-    border-radius: 5px;
-    text-align: center;
-    width: 48px;
-    height: 48px;
-    padding-top: 3px;
-}
-
-.awesemo-logo {
-    width: 40px;
-}
-
-.box {
-    background-color: rgb(31,41,56);
-    border-radius: 5px;
-    color: rgb(247,246,248);
-    font-size: 12px;
-    font-weight: bold;
-    font-family: 'Allerta', Helvetica, Arial, sans-serif;
+option:active, option:hover {
+    outline: none
 }

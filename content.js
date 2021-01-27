@@ -76,8 +76,6 @@ function sortListings(sortBy) {
         }
     }
 
-    console.log(newList);
-    console.log(newList.length);
     if (sortBy == "price") {
         newList = newList.sort((a, b) => {           
             if (parseInt(a.price.replace(/,/g, '')) === parseInt(b.price.replace(/,/g, ''))) {
@@ -99,10 +97,6 @@ function sortListings(sortBy) {
         });
     }
     
-    console.log(newList);
-    console.log(newList.length);
-    console.log(optionsList);
-    console.log(optionsList.length);
     for (var i = 0; i <= optionsList.length; i++) {            
         optionsList[i] = newList[i];
     }

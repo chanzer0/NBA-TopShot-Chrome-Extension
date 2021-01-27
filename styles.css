@@ -1,9 +1,0 @@
-option:active, option:hover, select:focus {
-    outline: none;
-}
-select:active, select:hover, select:focus {
-    outline: none;
-}
-select option:hover {
-    box-shadow: 0 0 10px 100px rgb(49, 49, 49) inset;
-}

@@ -57,19 +57,19 @@ function sortListings(sortBy) {
         newList.push(optionsList[i]);
         // single digit serials
         if (optionsList[i].value < 10) {
-            optionsList[i].style.background = "#0F5298";
+            optionsList[i].style.backgroundColor = "#0F5298";
         }
         // double digit serials
         else if (optionsList[i].value < 100) {
-            optionsList[i].style.background = "#3C99DC";
+            optionsList[i].style.backgroundColor = "#3C99DC";
         }
         // triple digit serials
         else if (optionsList[i].value < 1000) {
-            optionsList[i].style.background = "#66D3FA";
+            optionsList[i].style.backgroundColor = "#66D3FA";
         }
         // the rest
         else {
-            optionsList[i].style.background = "#D5F3FE";
+            optionsList[i].style.backgroundColor = "#D5F3FE";
         }
     }
 

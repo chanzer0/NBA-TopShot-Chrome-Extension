@@ -6,12 +6,25 @@
     "content_scripts": [{
         "js": ["content.js", "assets/scripts/jquery-3.2.1.min.js", "assets/scripts/bootstrap.min.js" ],
         "css": ["styles.css", "assets/scripts/bootstrap.min.css"],
-        "matches": ["https://www.nbatopshot.com/listings/p2p/*", "http://www.nbatopshot.com/listings/p2p/*"]
+        "matches": ["*://www.nbatopshot.com/listings/p2p/*"]
     }],
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
     "web_accessible_resources": [
-        "assets/*"
+        "assets/*",
+        "content.js",
+        "background.js"
     ],
     "permissions": [
-        "storage"
+        "storage",
+        "tabs",
+        "activeTab",
+        "webNavigation",
+        "*://www.nbatopshot.com/listings/p2p/*",
+        "*://*/*"
     ]
   }

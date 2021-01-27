@@ -1,4 +1,10 @@
 window.addEventListener("load", () => {
+    console.log("load event lisener");
+    setup();
+});
+
+function setup() {
+    console.log("running setup");
     // Check storage for toggle status
     var toggleValue = true;
     chrome.storage.sync.get("topshot-toggle-status", (obj) => {
@@ -32,7 +38,7 @@ window.addEventListener("load", () => {
 
         toggleValue ? sortListings("price") : sortListings("serial");
     });
-});
+}
 
 function toggleStatus() {
     var toggleSwitch = document.getElementById("toggle-button-extension");
@@ -45,7 +51,6 @@ function toggleStatus() {
         sortListings("serial");
     }
 }
-
 
 function sortListings(sortBy) {
     var dropdown = document.getElementById('moment-detailed-serialNumber');

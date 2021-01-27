@@ -44,9 +44,6 @@ function toggleStatus() {
     else {
         sortListings("serial");
     }
-    chrome.storage.sync.get("topshot-toggle-status", (obj) => {
-        console.log(obj);
-    });
 }
 
 

@@ -1,10 +1,12 @@
-window.addEventListener("load", () => {
-    console.log("load event lisener");
-    setup();
-});
+if (window.location.href.indexOf("/p2p/") > -1) {
+    if (document.readyState !== "complete") {
+        window.addEventListener("load", setup);
+    } else {
+        setup();
+    }
+}
 
 function setup() {
-    console.log("running setup");
     // Check storage for toggle status
     var toggleValue = true;
     chrome.storage.sync.get("topshot-toggle-status", (obj) => {

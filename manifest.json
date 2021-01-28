@@ -4,7 +4,7 @@
     "description": "Sort pricing by ascending ask rather than serial number to find deals",
     "manifest_version": 2,
     "content_scripts": [{
-        "js": ["content.js", "assets/scripts/jquery-3.2.1.min.js", "assets/scripts/bootstrap.min.js" ],
+        "js": ["assets/scripts/jquery-3.2.1.min.js", "assets/scripts/bootstrap.min.js" ],
         "css": ["styles.css", "assets/scripts/bootstrap.min.css"],
         "matches": ["*://www.nbatopshot.com/listings/p2p/*"]
     }],

@@ -7,6 +7,11 @@ if (window.location.href.indexOf("/p2p/") > -1) {
 }
 
 function setup() {
+    // Don't dupe me bro!
+    if (document.getElementById("toggle-button-extension") != null) {
+        return;
+    }
+
     // Check storage for toggle status
     var toggleValue = true;
     chrome.storage.sync.get("topshot-toggle-status", (obj) => {

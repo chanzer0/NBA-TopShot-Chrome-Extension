@@ -4,27 +4,31 @@
     "description": "Sort pricing by ascending ask rather than serial number to find deals",
     "manifest_version": 2,
     "content_scripts": [{
-        "js": ["assets/scripts/jquery-3.2.1.min.js", "assets/scripts/bootstrap.min.js" ],
-        "css": ["styles.css", "assets/scripts/bootstrap.min.css"],
+        "js": [
+            "assets/scripts/jquery-3.2.1.min.js",
+            "assets/scripts/bootstrap.min.js"
+        ],
+        "css": ["assets/scripts/bootstrap.min.css"],
         "matches": ["*://www.nbatopshot.com/listings/p2p/*"]
     }],
     "background": {
         "scripts": [
-            "background.js"
+            "background.js",
+            "assets/scripts/jquery-3.2.1.min.js"
         ],
         "persistent": false
     },
     "web_accessible_resources": [
         "assets/*",
         "content.js",
-        "background.js"
+        "background.js",
+        "form.html"
     ],
     "permissions": [
         "storage",
         "tabs",
         "activeTab",
         "webNavigation",
-        "*://www.nbatopshot.com/listings/p2p/*",
-        "*://*/*"
+        "*://www.nbatopshot.com/listings/p2p/*"
     ]
   }

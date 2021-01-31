@@ -1,14 +1,10 @@
 // Only try to execute if the page is loaded
 if (window.location.href.indexOf("/p2p/") > -1) {
     if (document.readyState !== "complete") {
-        window.addEventListener("load", () => {
-            console.log("load event fired");
-            setup();
-        });
+        window.addEventListener("load",  setup);
     } else {
         setup();
     }
-    console.log("on a listing page");
 }
 
 // Adds the price sorting radio button and calls the relevant sort function

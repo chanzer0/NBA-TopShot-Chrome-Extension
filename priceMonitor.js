@@ -1,14 +1,10 @@
 // Only try to execute if the page is loaded
 if (window.location.href.indexOf("/p2p/") > -1) {
     if (document.readyState !== "complete") {
-        window.addEventListener("load", () => {
-            console.log("load event fired");
-            addPriceMonitor();
-        });
+        window.addEventListener("load", addPriceMonitor);
     } else {
         addPriceMonitor();
     }
-    console.log("on a listing page");
 }
 
 function addPriceMonitor() {

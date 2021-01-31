@@ -9,7 +9,6 @@ chrome.runtime.onMessage.addListener((message, sender) => {
             chrome.tabs.get(sender.tab.id, (tab) => {
                 console.log(tab);
                 chrome.tabs.highlight({ 'tabs': tab.index }, function () { });
-                chrome.tabs.executeScript(tab.id, { code: "document.title = 'PRICE ALERT - BUY';" });
             });
             break;
     }

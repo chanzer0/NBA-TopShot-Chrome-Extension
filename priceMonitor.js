@@ -50,15 +50,16 @@ function addPriceMonitor() {
                                 // Check if min price has been found
                                 var priceDivs = $('[class*="SinglePriceLarge__PriceValue-"]').get();
                                 var minPrice = priceDivs[0].innerText;
-
-                                if (parseInt(minPrice.replace(/[,\$]/g, '')) < data[priceString]) {
+                                var integerPrice = parseInt(minPrice.replace(/[,\$]/g, ''));
+                                if (integerPrice < data[priceString]) {
                                     // Check if serial condition has been met (if applicable)
                                     if (data[serialString] != null &&  data[serialString].length != 0) {
                                         var dropdown = document.getElementById('moment-detailed-serialNumber');
                                         var optionsList = Array.from(dropdown.options);
-                                        var newArr = optionsList.filter(el => el.value < +data[serialString]);
-                                        if (newArr.length > 0) {
-                                            $('#moment-detailed-serialNumber').val(newArr[0].value);
+                                        var filtered = optionsList.filter(el => el.value < +data[serialString] && parseInt(el.price.replace(/[,\$]/g, '')) < +data[priceString]);
+                                        if (filtered.length > 0) {
+                                            $('#moment-detailed-serialNumber').val(filtered[0].value);
+                                            $('#moment-detailed-serialNumber').trigger("change");
                                         }
                                     } else {
                                         alertUser();

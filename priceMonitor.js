@@ -53,7 +53,7 @@ function buy() {
 function beginMonitoring() {
     var priceToAlert = +$("#alertForm #priceInput").val().trim();
     var refreshInterval = +$("#alertForm #refreshInput").val().trim();
-    $("#alertForm").click();
+    $("#monButton").click();
 
     var guid = window.location.href.split("/")[5];
     if (guid.indexOf("?") > -1 ){
@@ -92,7 +92,7 @@ function beginMonitoring() {
         });
 
 
-    window.setInterval(() => {
+    var intervalId = window.setInterval(() => {
         fetch("https://api.nba.dapperlabs.com/marketplace/graphql?GetMintedMoment",
         {
             method: "POST",
@@ -110,9 +110,10 @@ function beginMonitoring() {
         .then((data) => {
             if (data['data']['getMintedMoment']['data']['price'] < priceToAlert) {
                 chrome.storage.sync.set({ [guid]: true });
-                window.clearInterval();
+                window.clearInterval(intervalId);
                 window.location.reload(true);
             }
         });
     }, refreshInterval * 1000);
 }
+

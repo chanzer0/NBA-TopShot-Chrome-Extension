@@ -15,7 +15,15 @@ function addPriceMonitor() {
     if (guid.indexOf("?") > -1 ){
         guid = guid.split("?")[0];
     }
-    chrome.storage.sync.get([guid], (data) => {
+    var monEnabled = "monitoring" + guid;
+    var monPrice = "price" + guid;
+    var monRefresh = "refresh" + guid;
+    chrome.storage.sync.get([
+        guid,
+        monEnabled,
+        monPrice,
+        monRefresh
+    ], (data) => {
         if (Object.keys(data).length === 0 && data.constructor === Object) {
             chrome.storage.sync.set({ [guid]: false });
         } else {
@@ -25,16 +33,19 @@ function addPriceMonitor() {
         }
         fetch(chrome.extension.getURL('form.html'))
             .then(response => response.text())
-            .then(data => {
+            .then(form => {
                 var divToAppendTo = document.querySelector('div[class^="MomentBanner__MomentBannerContainer-"]');
                 var formDiv = document.createElement('div');
-                formDiv.innerHTML = data;
+                formDiv.innerHTML = form;
                 divToAppendTo.appendChild(formDiv);
                 $("#disableMonitor").toggle();
                 $("#alertForm").submit(() => {
                     beginMonitoring();
                     return false;
                 });
+                if (data[monEnabled]) {
+                    beginMonitoring(data[monPrice], data[monRefresh])
+                }
             });
     });     
 }
@@ -44,22 +55,42 @@ function buy() {
     if (guid.indexOf("?") > -1 ){
         guid = guid.split("?")[0];
     }
+    var monEnabled = "monitoring" + guid;
+    var monPrice = "price" + guid;
+    var monRefresh = "refresh" + guid;
     chrome.storage.sync.set({ [guid]: false });
+    chrome.storage.sync.set({ [monEnabled]: false });
+    chrome.storage.sync.set({ [monPrice]: null });
+    chrome.storage.sync.set({ [monRefresh]: null });
     var buyButton = $('button[data-testid="button-p2p-purchase-moment"]');
     buyButton.click();
     chrome.runtime.sendMessage({ type: "alertUser" });
 }
 
-function beginMonitoring() {
-    var priceToAlert = +$("#alertForm #priceInput").val().trim();
-    var refreshInterval = +$("#alertForm #refreshInput").val().trim();
-    $("#monButton").click();
-
+function beginMonitoring(priceFromStorage, refreshFromStorage) {
     var guid = window.location.href.split("/")[5];
     if (guid.indexOf("?") > -1 ){
         guid = guid.split("?")[0];
     }
+    var monEnabled = "monitoring" + guid;
+    var monPrice = "price" + guid;
+    var monRefresh = "refresh" + guid;
     chrome.storage.sync.set({ [guid]: false });
+    chrome.storage.sync.set({ [monEnabled]: true });
+
+
+    var priceToAlert = -1;
+    var refreshInterval = -1;
+    if (priceFromStorage != null && refreshFromStorage != null) {
+        priceToAlert = priceFromStorage;
+        refreshInterval = refreshFromStorage;
+    } else {
+        priceToAlert = +$("#alertForm #priceInput").val().trim();
+        refreshInterval = +$("#alertForm #refreshInput").val().trim();
+        chrome.storage.sync.set({ [monPrice]: priceToAlert });
+        chrome.storage.sync.set({ [monRefresh]: refreshInterval });
+        $("#monButton").click();
+    }
 
     var extension = window.location.href.split("/")[5];
     var setId = extension.split("+")[0];
@@ -92,6 +123,7 @@ function beginMonitoring() {
         });
 
 
+    $("#disableMonitor").toggle();
     var intervalId = window.setInterval(() => {
         fetch("https://api.nba.dapperlabs.com/marketplace/graphql?GetMintedMoment",
         {
@@ -121,5 +153,20 @@ function beginMonitoring() {
             }
         });
     }, refreshInterval * 1000);
+    $("#disableMonitor").click(() => {
+        var guid = window.location.href.split("/")[5];
+        if (guid.indexOf("?") > -1 ){
+            guid = guid.split("?")[0];
+        }
+        var monEnabled = "monitoring" + guid;
+        var monPrice = "price" + guid;
+        var monRefresh = "refresh" + guid;
+        chrome.storage.sync.set({ [guid]: false });
+        chrome.storage.sync.set({ [monEnabled]: false });
+        chrome.storage.sync.set({ [monPrice]: null });
+        chrome.storage.sync.set({ [monRefresh]: null });
+        window.clearInterval(intervalId);
+        $("#disableMonitor").toggle();
+    });
 }
 

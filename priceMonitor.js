@@ -108,8 +108,6 @@ function beginMonitoring() {
         })
         .then((res) => { return res.json(); })
         .then((data) => {
-            console.log("low price: " + data['data']['getMintedMoment']['data']['price']);
-            console.log("threshold price: " + priceToAlert);
             if (data != null) {
                 if (data['data']['getMintedMoment']['data']['price'] != null) {
                     if (!isNaN(data['data']['getMintedMoment']['data']['price'])) {

@@ -11,115 +11,108 @@ function addPriceMonitor() {
     if (document.getElementById("alertForm") != null) {
         return;
     }
-    fetch(chrome.extension.getURL('form.html'))
-        .then(response => response.text())
-        .then(data => {
-            var divToAppendTo = document.querySelector('div[class^="MomentBanner__MomentBannerContainer-"]');
-            var formDiv = document.createElement('div');
-            formDiv.innerHTML = data;
-            divToAppendTo.appendChild(formDiv);
-            $("#disableMonitor").toggle();
-            $("#alertForm").submit(() => {
-                beginMonitoring();
-                return false;
-            });
-            var guid = window.location.href.split("/")[5];
-            if (guid.indexOf("?") > -1 ){
-                guid = guid.split("?")[0];
+    var guid = window.location.href.split("/")[5];
+    if (guid.indexOf("?") > -1 ){
+        guid = guid.split("?")[0];
+    }
+    chrome.storage.sync.get([guid], (data) => {
+        if (Object.keys(data).length === 0 && data.constructor === Object) {
+            chrome.storage.sync.set({ [guid]: false });
+        } else {
+            if (data[guid]) {
+                buy();
             }
-            var monString = "monitoringEnabled" + guid;
-            chrome.storage.sync.get(monString, (obj) => {
-                if (Object.keys(obj).length === 0 && obj.constructor === Object) {
-                    chrome.storage.sync.set({ [monString]: false });
-                    return;
-                } else {
-                    if (obj[monString]) {
-                        $("#disableMonitor").toggle();
-                        $("#disableMonitor").click(() => {
-                            resetMonitoring();
-                        });
-                        var priceString = "priceToAlert" + guid;
-                        var serialString = "serialToAlert" + guid;
-                        var refreshString = "refreshInterval" + guid;
-                        chrome.storage.sync.get([
-                            priceString,
-                            serialString,
-                            refreshString
-                        ], (data) => {
-                            window.setTimeout(() => {
-                                // Check if min price has been found
-                                var priceDivs = $('[class*="SinglePriceLarge__PriceValue-"]').get();
-                                var minPrice = priceDivs[0].innerText;
-                                var integerPrice = parseInt(minPrice.replace(/[,\$]/g, ''));
-                                if (integerPrice < data[priceString]) {
-                                    // Check if serial condition has been met (if applicable)
-                                    if (data[serialString] != null &&  data[serialString].length != 0) {
-                                        var dropdown = document.getElementById('moment-detailed-serialNumber');
-                                        var optionsList = Array.from(dropdown.options);
-                                        var filtered = optionsList.filter(el => el.value < +data[serialString] && parseInt(el.price.replace(/[,\$]/g, '')) < +data[priceString]);
-                                        if (filtered.length > 0) {
-                                            $('#moment-detailed-serialNumber').val(filtered[0].value);
-                                            $('#moment-detailed-serialNumber').trigger("change");
-                                        }
-                                    } else {
-                                        alertUser();
-                                    }
-                                } else {
-                                    window.location.reload();
-                                }
-                            }, data[refreshString] * 1000);
-                        });
-                    }
-                }
+        }
+        fetch(chrome.extension.getURL('form.html'))
+            .then(response => response.text())
+            .then(data => {
+                var divToAppendTo = document.querySelector('div[class^="MomentBanner__MomentBannerContainer-"]');
+                var formDiv = document.createElement('div');
+                formDiv.innerHTML = data;
+                divToAppendTo.appendChild(formDiv);
+                $("#disableMonitor").toggle();
+                $("#alertForm").submit(() => {
+                    beginMonitoring();
+                    return false;
+                });
             });
-        });
+    });     
 }
 
-function alertUser() {
-    resetMonitoring();
+function buy() {
+    var guid = window.location.href.split("/")[5];
+    if (guid.indexOf("?") > -1 ){
+        guid = guid.split("?")[0];
+    }
+    chrome.storage.sync.set({ [guid]: false });
     var buyButton = $('button[data-testid="button-p2p-purchase-moment"]');
     buyButton.click();
     chrome.runtime.sendMessage({ type: "alertUser" });
 }
 
-function resetMonitoring() {
-    window.clearTimeout();
-    var guid = window.location.href.split("/")[5];
-    if (guid.indexOf("?") > -1 ){
-        guid = guid.split("?")[0];
-    }
-
-    var monString = "monitoringEnabled" + guid;
-    var priceString = "priceToAlert" + guid;
-    var serialString = "serialToAlert" + guid;
-    var refreshString = "refreshInterval" + guid;
-
-    chrome.storage.sync.set({ [monString]: false });
-    chrome.storage.sync.set({ [priceString]: null });
-    chrome.storage.sync.set({ [serialString]: null });
-    chrome.storage.sync.set({ [refreshString]: null });
-    $("#disableMonitor").toggle();
-}
-
 function beginMonitoring() {
-    var priceToAlert = $("#alertForm #priceInput").val().trim();
-    var serialToAlert = $("#alertForm #serialInput").val().trim();
-    var refreshInterval = $("#alertForm #refreshInput").val().trim();
+    var priceToAlert = +$("#alertForm #priceInput").val().trim();
+    var refreshInterval = +$("#alertForm #refreshInput").val().trim();
+    $("#alertForm").click();
 
     var guid = window.location.href.split("/")[5];
     if (guid.indexOf("?") > -1 ){
         guid = guid.split("?")[0];
     }
+    chrome.storage.sync.set({ [guid]: false });
 
-    var monString = "monitoringEnabled" + guid;
-    var priceString = "priceToAlert" + guid;
-    var serialString = "serialToAlert" + guid;
-    var refreshString = "refreshInterval" + guid;
+    var extension = window.location.href.split("/")[5];
+    var setId = extension.split("+")[0];
+    var playId = extension.split("+")[1];
+    if (playId.indexOf("?") > -1 ){
+        playId = playId.split("?")[0];
+    }
 
-    chrome.storage.sync.set({ [priceString]: priceToAlert });
-    chrome.storage.sync.set({ [serialString]: serialToAlert });
-    chrome.storage.sync.set({ [refreshString]: refreshInterval });
-    chrome.storage.sync.set({ [monString]: true });
+    var momentGUID = "";
+    fetch("https://api.nba.dapperlabs.com/marketplace/graphql?GetUserMomentListingsDedicated",
+        {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                query: `query GetUserMomentListingsDedicated($input: GetUserMomentListingsInput!) {\n  getUserMomentListings(input: $input) {\n    data {\n      circulationCount\n      flowRetired\n      version\n      set {\n        id\n        flowName\n        flowSeriesNumber\n        setVisualId\n        __typename\n      }\n      play {\n        ... on Play {\n          ...PlayDetails\n          __typename\n        }\n        __typename\n      }\n      assetPathPrefix\n      priceRange {\n        min\n        max\n        __typename\n      }\n      momentListings {\n        id\n        moment {\n          id\n          price\n          flowSerialNumber\n          owner {\n            dapperID\n            username\n            profileImageUrl\n            __typename\n          }\n          setPlay {\n            ID\n            flowRetired\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      momentListingCount\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment PlayDetails on Play {\n  id\n  description\n  stats {\n    playerID\n    playerName\n    primaryPosition\n    currentTeamId\n    dateOfMoment\n    jerseyNumber\n    awayTeamName\n    awayTeamScore\n    teamAtMoment\n    homeTeamName\n    homeTeamScore\n    totalYearsExperience\n    teamAtMomentNbaId\n    height\n    weight\n    currentTeam\n    birthplace\n    birthdate\n    awayTeamNbaId\n    draftYear\n    nbaSeason\n    draftRound\n    draftSelection\n    homeTeamNbaId\n    draftTeam\n    draftTeamNbaId\n    playCategory\n    homeTeamScoresByQuarter {\n      quarterScores {\n        type\n        number\n        sequence\n        points\n        __typename\n      }\n      __typename\n    }\n    awayTeamScoresByQuarter {\n      quarterScores {\n        type\n        number\n        sequence\n        points\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n  statsPlayerGameScores {\n    blocks\n    points\n    steals\n    assists\n    minutes\n    rebounds\n    turnovers\n    plusMinus\n    flagrantFouls\n    personalFouls\n    playerPosition\n    technicalFouls\n    twoPointsMade\n    blockedAttempts\n    fieldGoalsMade\n    freeThrowsMade\n    threePointsMade\n    defensiveRebounds\n    offensiveRebounds\n    pointsOffTurnovers\n    twoPointsAttempted\n    assistTurnoverRatio\n    fieldGoalsAttempted\n    freeThrowsAttempted\n    twoPointsPercentage\n    fieldGoalsPercentage\n    freeThrowsPercentage\n    threePointsAttempted\n    threePointsPercentage\n    __typename\n  }\n  statsPlayerSeasonAverageScores {\n    minutes\n    blocks\n    points\n    steals\n    assists\n    rebounds\n    turnovers\n    plusMinus\n    flagrantFouls\n    personalFouls\n    technicalFouls\n    twoPointsMade\n    blockedAttempts\n    fieldGoalsMade\n    freeThrowsMade\n    threePointsMade\n    defensiveRebounds\n    offensiveRebounds\n    pointsOffTurnovers\n    twoPointsAttempted\n    assistTurnoverRatio\n    fieldGoalsAttempted\n    freeThrowsAttempted\n    twoPointsPercentage\n    fieldGoalsPercentage\n    freeThrowsPercentage\n    threePointsAttempted\n    threePointsPercentage\n    __typename\n  }\n  __typename\n}\n`,
+                variables: {
+                    input: {
+                        setID: setId,
+                        playID: playId
+                    }
+                },
+                operationName: "GetUserMomentListingsDedicated"
+            })
+        })
+        .then((res) => { return res.json(); })
+        .then((data) => {
+            momentGUID = data['data']['getUserMomentListings']['data']['momentListings'][0]['moment']['id'];
+        });
 
-    window.location.reload();
+
+    window.setInterval(() => {
+        fetch("https://api.nba.dapperlabs.com/marketplace/graphql?GetMintedMoment",
+        {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                query: `query GetMintedMoment($momentId: ID!) {  getMintedMoment(momentId: $momentId) {    data {      ...MomentDetails      play {        ... on Play {          ...PlayDetails          __typename        }        __typename      }      __typename    }    __typename  }}fragment MomentDetails on MintedMoment {  id  version  sortID  set {    id    flowName    flowSeriesNumber    setVisualId    __typename  }  setPlay {    ID    flowRetired    circulationCount    __typename  }  assetPathPrefix  play {    id    stats {      playerID      playerName      primaryPosition      teamAtMomentNbaId      teamAtMoment      dateOfMoment      playCategory      __typename    }    __typename  }  price  listingOrderID  flowId  owner {    dapperID    username    profileImageUrl    __typename  }  flowSerialNumber  forSale  __typename}fragment PlayDetails on Play {  id  description  stats {    playerID    playerName    primaryPosition    currentTeamId    dateOfMoment    jerseyNumber    awayTeamName    awayTeamScore    teamAtMoment    homeTeamName    homeTeamScore    totalYearsExperience    teamAtMomentNbaId    height    weight    currentTeam    birthplace    birthdate    awayTeamNbaId    draftYear    nbaSeason    draftRound    draftSelection    homeTeamNbaId    draftTeam    draftTeamNbaId    playCategory    homeTeamScoresByQuarter {      quarterScores {        type        number        sequence        points        __typename      }      __typename    }    awayTeamScoresByQuarter {      quarterScores {        type        number        sequence        points        __typename      }      __typename    }    __typename  }  statsPlayerGameScores {    blocks    points    steals    assists    minutes    rebounds    turnovers    plusMinus    flagrantFouls    personalFouls    playerPosition    technicalFouls    twoPointsMade    blockedAttempts    fieldGoalsMade    freeThrowsMade    threePointsMade    defensiveRebounds    offensiveRebounds    pointsOffTurnovers    twoPointsAttempted    assistTurnoverRatio    fieldGoalsAttempted    freeThrowsAttempted    twoPointsPercentage    fieldGoalsPercentage    freeThrowsPercentage    threePointsAttempted    threePointsPercentage    __typename  }  statsPlayerSeasonAverageScores {    minutes    blocks    points    steals    assists    rebounds    turnovers    plusMinus    flagrantFouls    personalFouls    technicalFouls    twoPointsMade    blockedAttempts    fieldGoalsMade    freeThrowsMade    threePointsMade    defensiveRebounds    offensiveRebounds    pointsOffTurnovers    twoPointsAttempted    assistTurnoverRatio    fieldGoalsAttempted    freeThrowsAttempted    twoPointsPercentage    fieldGoalsPercentage    freeThrowsPercentage    threePointsAttempted    threePointsPercentage    __typename  }  __typename}`,
+                variables: {
+                    momentId: momentGUID
+                }
+            })
+        })
+        .then((res) => { return res.json(); })
+        .then((data) => {
+            if (data['data']['getMintedMoment']['data']['price'] < priceToAlert) {
+                chrome.storage.sync.set({ [guid]: true });
+                window.clearInterval();
+                window.location.reload(true);
+            }
+        });
+    }, refreshInterval * 1000);
 }

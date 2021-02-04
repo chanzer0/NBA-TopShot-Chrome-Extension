@@ -108,10 +108,18 @@ function beginMonitoring() {
         })
         .then((res) => { return res.json(); })
         .then((data) => {
-            if (data['data']['getMintedMoment']['data']['price'] < priceToAlert) {
-                chrome.storage.sync.set({ [guid]: true });
-                window.clearInterval(intervalId);
-                window.location.reload(true);
+            console.log("low price: " + data['data']['getMintedMoment']['data']['price']);
+            console.log("threshold price: " + priceToAlert);
+            if (data != null) {
+                if (data['data']['getMintedMoment']['data']['price'] != null) {
+                    if (!isNaN(data['data']['getMintedMoment']['data']['price'])) {
+                        if (data['data']['getMintedMoment']['data']['price'] < priceToAlert) {
+                            chrome.storage.sync.set({ [guid]: true });
+                            window.clearInterval(intervalId);
+                            window.location.reload(true);
+                        }
+                    }
+                }
             }
         });
     }, refreshInterval * 1000);

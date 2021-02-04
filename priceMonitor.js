@@ -145,6 +145,7 @@ function beginMonitoring(priceFromStorage, refreshFromStorage) {
                     if (!isNaN(data['data']['getMintedMoment']['data']['price'])) {
                         if (data['data']['getMintedMoment']['data']['price'] < priceToAlert) {
                             chrome.storage.sync.set({ [guid]: true });
+                            chrome.storage.sync.set({ [monEnabled]: false });
                             window.clearInterval(intervalId);
                             window.location.reload(true);
                         }
@@ -154,13 +155,6 @@ function beginMonitoring(priceFromStorage, refreshFromStorage) {
         });
     }, refreshInterval * 1000);
     $("#disableMonitor").click(() => {
-        var guid = window.location.href.split("/")[5];
-        if (guid.indexOf("?") > -1 ){
-            guid = guid.split("?")[0];
-        }
-        var monEnabled = "monitoring" + guid;
-        var monPrice = "price" + guid;
-        var monRefresh = "refresh" + guid;
         chrome.storage.sync.set({ [guid]: false });
         chrome.storage.sync.set({ [monEnabled]: false });
         chrome.storage.sync.set({ [monPrice]: null });

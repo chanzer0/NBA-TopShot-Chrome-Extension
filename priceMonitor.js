@@ -150,7 +150,9 @@ function beginMonitoring(priceFromStorage, refreshFromStorage) {
                             window.location.reload(true);
                         }
                     }
-                }
+                } else {
+					window.location.reload(true);
+				}
             }
         });
     }, refreshInterval * 1000);

@@ -66,8 +66,9 @@ function toggleStatus() {
 function sortListings(sortBy) {
     // Grab the dropdown and listings
     var dropdown = document.getElementById('moment-detailed-serialNumber');
+    dropdown.removeChild(dropdown.childNodes[0]);
     var optionsList = dropdown.options;
-
+    
     var newList = []
     for (var i = 0; i < optionsList.length; i++) {
         optionsList[i].price = optionsList[i].innerText.split('$')[1];

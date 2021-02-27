@@ -1,6 +1,6 @@
 # NBA Top Shot Chrome Extension
 
-Packaged in this github repository is a tool for NBA Top Shot that will sort listing prices ascending, instead of by serial number. This allows you to find undervalued serial numbers. Additionally, a price monitor is included to allow you to monitor the price of different marketplace listings, being notified when low prices become available. This will allow you to snipe those cheap moments before anyone else!
+Packaged in this github repository is a tool for NBA Top Shot that will sort listing prices ascending, instead of by serial number. This allows you to find undervalued serial numbers.
 
 If you find value in this extension, the most valuable thing you can do for me is to [leave me an "issue"](https://github.com/chanzer0/NBA-TopShot-Chrome-Extension/issues) that praises my tools and explains how they've helped you. If you are still feel inclined to give me monetary reimbursement — gift me a moment. You can do this buy clicking your moment and gifting them to ["chanZERO"](https://www.nbatopshot.com/user/@chanZERO).
 
@@ -8,7 +8,6 @@ If you find value in this extension, the most valuable thing you can do for me i
 
 ## Screenshots
 ![Example screenshot](assets/readme_images/screenshot.png)
-![Example screenshot2](assets/readme_images/monitor.png)
 
 
 ## Installation

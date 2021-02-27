@@ -6,7 +6,6 @@
     "content_scripts": [{
         "js": [
             "priceSort.js",
-            "priceMonitor.js",
             "assets/scripts/jquery-3.2.1.min.js",
             "assets/scripts/bootstrap.min.js"
         ],

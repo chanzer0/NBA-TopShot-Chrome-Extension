@@ -1,14 +1,20 @@
 // Only try to execute if the page is loaded
+document.addEventListener('readystatechange', () => {
+    console.log(document.readyState)
+});
 if (window.location.href.indexOf("/p2p/") > -1) {
     if (document.readyState !== "complete") {
         window.addEventListener("load", setup);
     } else {
-        setup();
+        setTimeout(() => {
+            setup();
+        }, 500);
     }
 }
 
 // Adds the price sorting radio button and calls the relevant sort function
 function setup() {
+    console.log('running setup');
     if (document.getElementById("toggle-button-extension") != null) {
         return;
     }
@@ -119,19 +125,14 @@ function sortListings(sortBy) {
     for (var i = 0; i <= optionsList.length; i++) {
         optionsList[i] = newList[i];
     }
-    if (window.location.href.indexOf('?') < 0) {
-        history.pushState(null, null, '?serialNumber=' + optionsList[0].value);
-    }
     $("#moment-detailed-serialNumber").val(optionsList[0].value);
     (function ($) {
-
         $.fn.trigger2 = function (eventName) {
             return this.each(function () {
                 var el = $(this).get(0);
                 triggerNativeEvent(el, eventName);
             });
         };
-
         function triggerNativeEvent(el, eventName) {
             if (el.fireEvent) { // < IE9
                 (el.fireEvent('on' + eventName));
@@ -141,7 +142,6 @@ function sortListings(sortBy) {
                 el.dispatchEvent(evt);
             }
         }
-
     }(jQuery));
     $("#moment-detailed-serialNumber").trigger2('change');
 }

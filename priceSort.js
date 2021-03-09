@@ -1,7 +1,4 @@
 // Only try to execute if the page is loaded
-document.addEventListener('readystatechange', () => {
-    console.log(document.readyState)
-});
 if (window.location.href.indexOf("/p2p/") > -1) {
     if (document.readyState !== "complete") {
         window.addEventListener("load", setup);
@@ -14,7 +11,6 @@ if (window.location.href.indexOf("/p2p/") > -1) {
 
 // Adds the price sorting radio button and calls the relevant sort function
 function setup() {
-    console.log('running setup');
     if (document.getElementById("toggle-button-extension") != null) {
         return;
     }

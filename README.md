@@ -26,6 +26,6 @@ If you find value in this extension, the most valuable thing you can do for me i
     ![Dev mode](assets/readme_images/dev-mode.png)
 
 4. In the top left, select `Load Unpacked` and navigate to the directory of the code you downloaded in step 1.
-5. You should now see an extension like the one below. You can ignore the `Errors` tab. Click the refresh button, and then navigate to NBA Top Shot and test it out!
+5. You should now see an extension like the one below. You can ignore the `Errors` tab. Click the refresh button, and then navigate to NBA Top Shot and test it out! Note that it takes a refresh on the listing page in order for the extension to work.
     
     ![Extension screenshot](assets/readme_images/extension.png)

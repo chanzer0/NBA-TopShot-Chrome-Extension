@@ -11,6 +11,17 @@ If you find value in this extension, the most valuable thing you can do for me i
 
 
 ## Installation
+
+### Mobile Installation
+
+For Android users
+1. Download Kiwi Browser or Yandex Browser application from the Google Play Store
+2. Download the `MOBILE_NBA-TopShot-Chrome-Extension.zip` file located in the root of this directory
+3. In your downloaded browser, go to the Extensions page (located under the 3 dots ⋮), and enable Developer Mode
+4. Press Load and select the `MOBILE_NBA-TopShot-Chrome-Extension.zip` file you just downloaded
+5. Hit the refresh icon, and then proceed to NBA Top Shot and utilize the extension
+
+
 ### System requirements
 - To use the extension, you will obviously need to use the Google Chrome web browser
 

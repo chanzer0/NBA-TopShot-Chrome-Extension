@@ -1,5 +1,5 @@
-// Only try to execute if the page is loaded
-if (window.location.href.indexOf("/p2p/") > -1) {
+if (window.contentScriptInjected !== true) {
+    window.contentScriptInjected = true; // global scope
     if (document.readyState !== "complete") {
         window.addEventListener("load", setup);
     } else {

@@ -1,6 +1,6 @@
 # NBA Top Shot Chrome Extension
 
-**This Extension is ToS Compliant!**
+**This Extension Has Been Deprecated!**
 
 Packaged in this github repository is a tool for NBA Top Shot that will sort listing prices ascending, instead of by serial number. This allows you to find undervalued serial numbers.
 
